@@ -24,7 +24,7 @@ jobs:
       - name: Deploy to Github Pages
         uses: peaceiris/actions-gh-pages@v4
         with:
-          github_token: ${{ secrets.CSN_TOKEN }}
+          github_token: ${{ secrets.csn_token }}
           publish_dir: .
 
   dast:
