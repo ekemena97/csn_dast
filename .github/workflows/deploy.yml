@@ -27,6 +27,7 @@ jobs:
           github_token: ${{ secrets.csn_token }}
           publish_dir: .
 
+
   dast:
     runs-on: ubuntu-latest
     needs: deploy
