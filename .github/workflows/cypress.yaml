@@ -7,7 +7,7 @@ on:
   pull_request:
     branches:
       - main
-  workflow_dispatch: # Allows manual trigger from GitHub UI
+  workflow_dispatch:
 
 jobs:
   cypress-run:
@@ -23,15 +23,24 @@ jobs:
           node-version: 20
           cache: 'npm'
 
+      - name: Ensure lock file exists
+        run: |
+          if [ ! -f package-lock.json ]; then
+            echo "package-lock.json not found! Running npm install..."
+            npm install --package-lock-only
+            git add package-lock.json
+            git commit -m "Generate package-lock.json in CI"
+          fi
+
       - name: Install dependencies
-        run: npm install
+        run: npm ci || npm install  # Use npm ci if possible, otherwise fallback to npm install
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v2
         with:
           start: npm start
-          wait-on: 'http://localhost:3000' # Change this if your app runs on a different port
-          browser: chrome # Optional: Run tests in Chrome (default is Electron)
+          wait-on: 'http://localhost:3000'
+          browser: chrome
 
       - name: Upload Cypress test results (if failed)
         if: failure()
@@ -39,10 +48,3 @@ jobs:
         with:
           name: cypress-screenshots
           path: cypress/screenshots
-
-      - name: Upload Cypress videos (if failed)
-        if: failure()
-        uses: actions/upload-artifact@v4
-        with:
-          name: cypress-videos
-          path: cypress/videos
