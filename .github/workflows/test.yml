@@ -1,0 +1,16 @@
+name: Test case
+
+on: 
+  push
+
+jobs:
+  unit-testing:
+    name: Unit Testing
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Check the files
+        run: ls -la
+    
